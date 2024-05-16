@@ -38,8 +38,8 @@ public class MovieBookingMain {
 			switch (choiceNum) {
 
 			case INDEX_CHOICE.LOGIN:
-				// id pw 값을 받아서 로그인을 확인하고 user객체를 리턴받는다. 로그인 성공시 userMenuView함수를 호출 , user객체가
-				// null일경우 로그인 실패.
+				// id pw 값을 받아서 로그인을 확인하고 user객체를 리턴받는다. 로그인 성공시 userMenu함수를 호출 
+				// user 변수가 null일경우 로그인 실패.
 				user = userManager.userLogin();
 				if (user != null) {
 					userMenu();
@@ -53,6 +53,7 @@ public class MovieBookingMain {
 				break;
 			default:
 				System.out.println("해당 메뉴 번호만 입력하세요.");
+				break;
 			}
 		}
 	}
@@ -99,6 +100,7 @@ public class MovieBookingMain {
 				break;
 			default:
 				System.out.println("해당 메뉴 번호만 입력하세요.");
+				break;
 			}
 		}
 	}
@@ -146,6 +148,9 @@ public class MovieBookingMain {
 			case  ADMIN_CHOICE.MAIN : 
 				exitFlag = true;
 				break; 
+			default:
+				System.out.println("해당 메뉴 번호만 입력하세요.");
+				break;
 			
 			}
 		}

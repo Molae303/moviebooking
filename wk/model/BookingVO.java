@@ -9,6 +9,7 @@ public class BookingVO {
 	private int movieCd;
 	private Date bookingDate;
 	private int price;
+	private String screenDt;
 	
 	public BookingVO() {
 		super();
@@ -61,6 +62,14 @@ public class BookingVO {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public String getScreenDt() {
+		return screenDt;
+	}
+
+	public void setScreenDt(String screenDt) {
+		this.screenDt = screenDt;
 	}
 	
 	

@@ -49,7 +49,6 @@ public class MovieRegisterManager {
 	public void movieUpdate() {
 		
 		MovieDAO mdao = new MovieDAO();
-		MovieVO mvo = new MovieVO();
 		
 		System.out.println("상영중 영화 리스트");
 		movieTotalList();
