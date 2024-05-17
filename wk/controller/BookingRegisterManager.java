@@ -74,6 +74,7 @@ public class BookingRegisterManager {
 		bdao.getBookingInfo(user, list.get(inputNo - 1).getMovieCd(), list.get(inputNo-1).getScreenDt());
 	}
 
+	//예매 취소하기(DELETE)
 	public void bookingDelete(UserVO user) {
 
 		int bookingId = 0;

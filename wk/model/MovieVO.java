@@ -85,8 +85,7 @@ public class MovieVO {
 
 	@Override
 	public String toString() {
-		return movieCd + "\t" + movieNm + "\t\t" + openDt + "\t" + genreAlt
-				+ "\t" + repNationNm + "\t" + director + "\t" + screenDt;
+		return String.format("%-10s %-10s %-10s %-10s %-5s %-10s %-10s", movieCd, movieNm, openDt, genreAlt, repNationNm, director, screenDt);
 	}
 	
 	

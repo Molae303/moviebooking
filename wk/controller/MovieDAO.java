@@ -142,7 +142,7 @@ public class MovieDAO {
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 
-			System.out.println("영화코드\t\t영화명\t\t개봉연도\t\t장르\t국가\t감독\t상영일");
+			System.out.println(String.format("%-10s %-10s %-10s %-10s %-5s %-10s %-10s", "영화코드", "영화명", "개봉연도", "장르", "국가", "감독", "상영일"));
 			while (rs.next()) {
 				mvo = new MovieVO(rs.getInt("movieCd"), rs.getString("movieNm"), rs.getString("openDt"),
 						rs.getString("genreAlt"), rs.getString("repnationNm"), rs.getString("director"),

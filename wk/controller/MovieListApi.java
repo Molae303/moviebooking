@@ -25,9 +25,8 @@ import org.xml.sax.SAXException;
 
 import wk.model.MovieVO;
 
-
 public class MovieListApi {
-	
+
 	public static ArrayList<MovieVO> apiConnection() {
 		ArrayList<MovieVO> list = new ArrayList<>();
 		// 1. 요청 url 생성
@@ -38,10 +37,11 @@ public class MovieListApi {
 			Properties properties = new Properties();
 			properties.load(new FileReader(filePath));
 			String key = properties.getProperty("key");
-			urlBuilder.append("?" + URLEncoder.encode("key", "UTF-8")
-					+"=" + key);
-			urlBuilder.append("&" + URLEncoder.encode("itemPerPage", "UTF-8") + "=" + URLEncoder.encode("100", "UTF-8"));
-			urlBuilder.append("&" + URLEncoder.encode("openStartDt", "UTF-8") + "=" + URLEncoder.encode("2020", "UTF-8"));
+			urlBuilder.append("?" + URLEncoder.encode("key", "UTF-8") + "=" + key);
+			urlBuilder
+					.append("&" + URLEncoder.encode("itemPerPage", "UTF-8") + "=" + URLEncoder.encode("100", "UTF-8"));
+			urlBuilder
+					.append("&" + URLEncoder.encode("openStartDt", "UTF-8") + "=" + URLEncoder.encode("2020", "UTF-8"));
 			urlBuilder.append("&" + URLEncoder.encode("openEndDt", "UTF-8") + "=" + URLEncoder.encode("2022", "UTF-8"));
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -88,7 +88,6 @@ public class MovieListApi {
 				MovieVO movie = new MovieVO();
 				// item 자식태그에 순차적으로 접근
 				for (Node node = item.getFirstChild(); node != null; node = node.getNextSibling()) {
-					System.out.println(node.getNodeName() + " : " + node.getTextContent());
 
 					switch (node.getNodeName()) {
 					case "movieCd":

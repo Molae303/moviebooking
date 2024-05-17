@@ -212,10 +212,10 @@ public class UserDAO {
 			pstmt = con.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
-			System.out.println(String.format("%-15s %-20s %-10s %-12s %-30s %-5s", "아이디","비밀번호","성함","전화번호","이메일","관리자(t/f)"));
+			System.out.println(String.format("%-15s %-20s %-15s %-15s %-30s %-10s", "아이디","비밀번호","성함","전화번호","이메일","관리자(t/f)"));
 			while(rs.next()) {
 				uvo = new UserVO(rs.getString("userId"), rs.getString("userPw"), rs.getString("userName"), rs.getString("userPhone"), rs.getString("userEmail"), (rs.getInt("isAdmin")==1)?(true):(false));
-				System.out.println(String.format("%-15s %-20s %-10s %-12s %-30s %-5s", uvo.getUserId(),uvo.getUserPw(),uvo.getUserName(),uvo.getUserPhone(),uvo.getUserEmail(),String.valueOf(uvo.isAdmin())));
+				System.out.println(String.format("%-15s %-20s %-15s %-15s %-30s %-10s", uvo.getUserId(),uvo.getUserPw(),uvo.getUserName(),uvo.getUserPhone(),uvo.getUserEmail(), uvo.isAdmin() ? "true": "false"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
