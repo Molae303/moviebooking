@@ -1,5 +1,6 @@
 package wk.controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -12,22 +13,22 @@ import wk.model.UserVO;
 
 public class BookingDAO {
 
-	//예매 추가
+	// 예매 추가
 	public void setBookingRegiste(BookingVO bvo, String seat) {
 
-		String sql = "INSERT INTO booking VALUES(booking_seq.nextval, ?, ?, SYSDATE, ?, ?)";
+		String sql = "{CALL booking_insert_proc(?,?,?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.makeConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, bvo.getUserId());
-			pstmt.setInt(2, bvo.getMovieCd());
-			pstmt.setInt(3, bvo.getPrice());
-			pstmt.setString(4, seat);
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, bvo.getUserId());
+			cstmt.setInt(2, bvo.getMovieCd());
+			cstmt.setInt(3, bvo.getPrice());
+			cstmt.setString(4, seat);
 
-			int result = pstmt.executeUpdate();
+			int result = cstmt.executeUpdate();
 
 			if (result == 1) {
 				System.out.println(bvo.getMovieCd() + "영화 예매 완료");
@@ -40,8 +41,8 @@ public class BookingDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -64,13 +65,10 @@ public class BookingDAO {
 		int totalPrice = 0;
 		int no = 0;
 
-		String sql = "SELECT ROWNUM as no, username, movieCd, movienm, screendt, price, quantity\r\n"
-				+ "FROM (\r\n"
+		String sql = "SELECT ROWNUM as no, username, movieCd, movienm, screendt, price, quantity\r\n" + "FROM (\r\n"
 				+ "    SELECT U.username, M.movieCd, M.movienm, M.screendt, SUM(B.price) as price, COUNT(*) as quantity\r\n"
-				+ "    FROM BOOKING B \r\n"
-				+ "    INNER JOIN USERTBL U ON B.userId = U.userId\r\n"
-				+ "    INNER JOIN MOVIE M ON B.movieCd = M.movieCd\r\n"
-				+ "    WHERE B.userId = ?\r\n"
+				+ "    FROM BOOKING B \r\n" + "    INNER JOIN USERTBL U ON B.userId = U.userId\r\n"
+				+ "    INNER JOIN MOVIE M ON B.movieCd = M.movieCd\r\n" + "    WHERE B.userId = ?\r\n"
 				+ "    GROUP BY U.username, M.movieCd, M.movienm, M.screendt)";
 
 		Connection con = null;
@@ -91,11 +89,11 @@ public class BookingDAO {
 				userName = rs.getString("userName");
 				bvo.setMovieCd(rs.getInt("movieCd"));
 				movieNm = rs.getString("movieNm");
-				bvo.setScreenDt( rs.getString("screenDt"));
+				bvo.setScreenDt(rs.getString("screenDt"));
 				price = rs.getInt("price");
 				quantity = rs.getInt("quantity");
-				System.out.println(no + "\t" + userName + "\t" + bvo.getMovieCd() + "\t" + movieNm + "\t\t" + bvo.getScreenDt()
-						+ "\t" + price + "\t" + quantity);
+				System.out.println(no + "\t" + userName + "\t" + bvo.getMovieCd() + "\t" + movieNm + "\t\t"
+						+ bvo.getScreenDt() + "\t" + price + "\t" + quantity);
 				totalPrice += price;
 				list.add(bvo);
 			}
@@ -121,21 +119,20 @@ public class BookingDAO {
 	}
 
 	// 예매내역 삭제
-	public void setBookingDelete(UserVO user, int movieCd) {
+	public void setBookingDelete(UserVO user, int bookingId) {
 
-		StringBuffer sql = new StringBuffer();
-		sql.append("DELETE FROM booking WHERE userId=? AND bookingId=?");
+		String sql = "{CALL booking_delete_proc(?,?)}";
 
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.makeConnection();
-			pstmt = con.prepareStatement(sql.toString());
-			pstmt.setString(1, user.getUserId());
-			pstmt.setInt(2, movieCd);
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, user.getUserId());
+			cstmt.setInt(2, bookingId);
 
-			int i = pstmt.executeUpdate();
+			int i = cstmt.executeUpdate();
 
 			if (i >= 1) {
 				System.out.println("예매내역 취소 완료");
@@ -147,8 +144,8 @@ public class BookingDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -221,10 +218,9 @@ public class BookingDAO {
 
 	}
 
-	
-	//예매 상세내역 보기
+	// 예매 상세내역 보기
 	public void getBookingInfo(UserVO user, int movieCd, String screenDt) {
-		
+
 		int bookingId = 0;
 		Date bookingDate = null;
 		String userName = null;
@@ -261,8 +257,8 @@ public class BookingDAO {
 				screenDt = rs.getString("screenDt");
 				price = rs.getInt("price");
 				seat = rs.getString("seat");
-				System.out.println(bookingId + "\t" + bookingDate + "\t" + userName + "\t" + movieCd + "\t" + movieNm + "\t\t" + screenDt
-						+ "\t" + price + "\t" + seat);
+				System.out.println(bookingId + "\t" + bookingDate + "\t" + userName + "\t" + movieCd + "\t" + movieNm
+						+ "\t\t" + screenDt + "\t" + price + "\t" + seat);
 				totalPrice += price;
 			}
 			System.out.println("총 급액 : " + totalPrice);
@@ -285,9 +281,9 @@ public class BookingDAO {
 		}
 	}
 
-	//좌석 확인
+	// 좌석 확인
 	public ArrayList<String> setBookingSeat(int movieCd) {
-		
+
 		ArrayList<String> list = new ArrayList<>();
 		String sql = "SELECT seat FROM Booking WHERE movieCd = ?";
 		Connection con = null;
@@ -298,34 +294,34 @@ public class BookingDAO {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, movieCd);
 			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				list.add(rs.getString("seat"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				if(rs != null) {
+				if (rs != null) {
 					rs.close();
 				}
-				if(pstmt != null) {
+				if (pstmt != null) {
 					pstmt.close();
 				}
-				if(con != null) {
+				if (con != null) {
 					con.close();
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return list;
 	}
-	
-	//중복 좌석 확인
+
+	// 중복 좌석 확인
 	public boolean getSeatOverlap(int movieCd, String choiceSeat) {
-		
+
 		String sql = "SELECT * FROM booking WHERE movieCd =? AND seat = ?";
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -358,7 +354,7 @@ public class BookingDAO {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return seatOverlapResult;
 	}
 

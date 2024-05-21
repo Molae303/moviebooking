@@ -1,5 +1,6 @@
 package wk.controller;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,22 +13,22 @@ public class UserDAO {
 	// 회원가입
 	public void setUserRegiste(UserVO uvo) {
 
-		String sql = "INSERT INTO userTbl VALUES (?, ?, ?, ?, ?, ?)";
+		String sql = "{CALL user_inser_proc(?,?,?,?,?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 		int isAdmin = (uvo.isAdmin()) ? (1) : (0);
 
 		try {
 			con = DBUtil.makeConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, uvo.getUserId());
-			pstmt.setString(2, uvo.getUserPw());
-			pstmt.setString(3, uvo.getUserName());
-			pstmt.setString(4, uvo.getUserPhone());
-			pstmt.setString(5, uvo.getUserEmail());
-			pstmt.setInt(6, isAdmin);
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, uvo.getUserId());
+			cstmt.setString(2, uvo.getUserPw());
+			cstmt.setString(3, uvo.getUserName());
+			cstmt.setString(4, uvo.getUserPhone());
+			cstmt.setString(5, uvo.getUserEmail());
+			cstmt.setInt(6, isAdmin);
 
-			int i = pstmt.executeUpdate();
+			int i = cstmt.executeUpdate();
 
 			if (i == 1) {
 				System.out.println(uvo.getUserName() + "님 가입이 완료되었습니다.");
@@ -38,8 +39,8 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
@@ -163,19 +164,19 @@ public class UserDAO {
 	//유저 정보 수정
 	public void setUserUpdate(UserVO uvo) {
 		
-		String sql = "UPDATE userTbl SET userPw=?, userName=?, userPhone=? WHERE userId=?";
+		String sql = "{CALL user_update_proc(?,?,?,?)}";
 		Connection con = null;
-		PreparedStatement pstmt = null;
+		CallableStatement cstmt = null;
 
 		try {
 			con = DBUtil.makeConnection();
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, uvo.getUserPw());
-			pstmt.setString(2, uvo.getUserName());
-			pstmt.setString(3, uvo.getUserPhone());
-			pstmt.setString(4, uvo.getUserId());
+			cstmt = con.prepareCall(sql);
+			cstmt.setString(1, uvo.getUserPw());
+			cstmt.setString(2, uvo.getUserName());
+			cstmt.setString(3, uvo.getUserPhone());
+			cstmt.setString(4, uvo.getUserId());
 			
-			int i = pstmt.executeUpdate();
+			int i = cstmt.executeUpdate();
 
 			if (i == 1) {
 				System.out.println(uvo.getUserId() + "님 유저 정보 수정 완료.");
@@ -187,8 +188,8 @@ public class UserDAO {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (pstmt != null) {
-					pstmt.close();
+				if (cstmt != null) {
+					cstmt.close();
 				}
 				if (con != null) {
 					con.close();
